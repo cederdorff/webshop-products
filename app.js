@@ -1,44 +1,46 @@
-import products from "./data.js";
-import { getStockStatus } from "./helpers.js";
+import { getExcerpt, getStockStatus, getAllProducts } from "./helpers.js";
 
 // Event listener - starter appen når siden er loaded
 document.addEventListener("DOMContentLoaded", initApp);
 
 // Initialize app
-function initApp() {
-  console.log("App initialized");
-  displayAllProducts();
+async function initApp() {
+  console.log("App initialized 🚀");
+
+  // Vis loading
+  const grid = document.querySelector("#productGrid");
+  grid.innerHTML = "<p>Henter produkter...</p>";
+
+  // Hent data
+  const products = await getAllProducts();
+
+  // Vis produkter
+  displayAllProducts(products);
 }
 
 // Vis alle produkter
-function displayAllProducts() {
-  // ryd grid
-  document.querySelector("#productGrid").innerHTML = "";
-  // loop gennem products
-  for (const product of products) {
-    // kald displayProduct for hvert produkt
-    displayProduct(product);
-  }
+function displayAllProducts(products) {
+  const grid = document.querySelector("#productGrid");
+  grid.innerHTML = products.map(displayProduct).join("");
 }
 
 // Vis ét produkt
 function displayProduct(product) {
-  const stock = getStockStatus(product);
+  const stock = getStockStatus(product.inStock);
 
-  // lav HTML
-  const html = /*html*/ `
-  <article class="product-card">
-    <img src="${product.image}" class="product-image" />
-    <div class="product-info">
-      <h2 class="product-title">${product.title}</h2>
-      <p class="product-description">
-        ${product.description}
-      </p>
-      <p class="product-price">$${product.price}</p>
-      <span class="product-stock ${stock.class}">${stock.text}</span>
-    </div>
-  </article>
+  return /*html*/ `
+    <article class="product-card">
+      <a href="product.html?id=${product.id}">
+        <img src="${product.image}" class="product-image" />
+      </a>
+      <div class="product-info">
+        <h2 class="product-title">
+          <a href="product.html?id=${product.id}">${product.title}</a>
+        </h2>
+        <p class="product-description">${getExcerpt(product.description)}</p>
+        <p class="product-price">$${product.price}</p>
+        <span class="product-stock ${stock.class}">${stock.text}</span>
+      </div>
+    </article>
   `;
-  // indsæt i DOM
-  document.querySelector("#productGrid").insertAdjacentHTML("beforeend", html);
 }
