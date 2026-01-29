@@ -6,28 +6,25 @@ document.addEventListener("DOMContentLoaded", initApp);
 // Initialize app
 async function initApp() {
   console.log("App initialized 🚀");
-
-  // Vis loading
-  const grid = document.querySelector("#productGrid");
-  grid.innerHTML = "<p>Henter produkter...</p>";
-
   // Hent data
   const products = await getAllProducts();
-
   // Vis produkter
   displayAllProducts(products);
 }
 
 // Vis alle produkter
 function displayAllProducts(products) {
+  // Find grid container
   const grid = document.querySelector("#productGrid");
+  // Fyld grid med produkter
   grid.innerHTML = products.map(displayProduct).join("");
 }
 
 // Vis ét produkt
 function displayProduct(product) {
+  // Hent lagerstatus fra helper funktion
   const stock = getStockStatus(product.inStock);
-
+  // Returner HTML for produktkort
   return /*html*/ `
     <article class="product-card">
       <a href="product.html?id=${product.id}">

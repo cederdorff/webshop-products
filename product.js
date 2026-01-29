@@ -5,27 +5,32 @@ document.addEventListener("DOMContentLoaded", initProduct);
 async function initProduct() {
   console.log("Product page initialized 🚀");
 
-  // Hent id fra URL
+  // Hent id fra URL - det er det produkt vi skal vise
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("id");
   console.log("Product ID:", id);
 
   // Hent alle produkter
   const products = await getAllProducts();
-
-  // Find det specifikke produkt
+  // Find det specifikke produkt med det id som vi skal vise
   const product = products.find(p => p.id == id);
 
+  // Vis produktet
   if (product) {
+    // Hvis produktet findes, vis det
     displayProduct(product);
   } else {
+    // Hvis produktet ikke findes, vis en fejlmeddelelse
     document.querySelector("#product").innerHTML = "<p>Produkt ikke fundet!</p>";
   }
 }
 
+// Vis ét produkt. Denne funktion er ny og anderledes end den i app.js
 function displayProduct(product) {
+  // Hent lagerstatus
   const stock = getStockStatus(product.inStock);
 
+  // generér HTML for produktdetaljer
   const html = /*html*/ `
     <div class="product-detail-container">
       <div class="product-image-large">
@@ -53,6 +58,6 @@ function displayProduct(product) {
       </div>
     </div>
   `;
-
+  // Indsæt HTML i DOM
   document.querySelector("#product").innerHTML = html;
 }
